@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Machine Learning Dashboard</title>
+
+<style>
+/* --------- Global Reset ---- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/*  Background  */
+body {
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* Floating Animation*/
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+    100% { transform: translateY(0px); }
+}
+
+/* --------- Main Card --------- */
+.dashboard {
+    background: #ffffff;
+    width: 420px;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+    animation: float 4s ease-in-out infinite;
+}
+
+/* --------- Title --------- */
+.dashboard h1 {
+    color: #333;
+    font-size: 26px;
+    margin-bottom: 10px;
+}
+
+/* --------- Subtitle --------- */
+.dashboard p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* --------- File Input --------- */
+input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-bottom: 30px;
+    cursor: pointer;
+}
+
+/* --------- Button Group --------- */
+.actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* --------- Buttons --------- */
+button {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+/* Regression Button */
+.regression {
+    background: linear-gradient(135deg, #43cea2, #185a9d);
+}
+
+/* Classification Button */
+.classification {
+    background: linear-gradient(135deg, #ff9966, #ff5e62);
+}
+
+/* Hover Effect */
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.3);
+    opacity: 0.95;
+}
+
+/* --------- Footer Text --------- */
+.footer {
+    margin-top: 25px;
+    font-size: 12px;
+    color: #aaa;
+}
+</style>
+</head>
+
+<body>
+
+<div class="dashboard">
+
+    <h1>ML Dashboard</h1>
+    <p>Upload a CSV dataset and choose a model type</p>
+
+    <!-- REGRESSION FORM -->
+    <form method="POST" action="/regression" enctype="multipart/form-data">
+        <input type="file" name="dataset" accept=".csv" required>
+
+        <div class="actions">
+            <button class="regression">Regression</button>
+        </div>
+    </form>
+
+    <br>
+
+    <!-- CLASSIFICATION FORM -->
+    <form method="POST" action="/classification" enctype="multipart/form-data">
+        <input type="file" name="dataset" accept=".csv" required>
+
+        <div class="actions">
+            <button class="classification">Classification</button>
+        </div>
+    </form>
+
+    <div class="footer">
+        Built with Flask & Machine Learning
+    </div>
+
+</div>
+
+</body>
+</html>
