@@ -78,20 +78,36 @@ img {
     </div>
 
 </div>
-
-<div class="metrics">
-    <h3>Model Performance</h3>
-    <ul>
-        {% for line in metrics %}
-            {% if "Best Model" in line %}
-                <li class="best">{{ line }}</li>
-            {% else %}
-                <li>{{ line }}</li>
-            {% endif %}
-        {% endfor %}
-    </ul>
+<!--  BAR CHART -->
+<div style="margin-top:40px; text-align:center;">
+    <h2>Model Comparison (Bar Chart)</h2>
+    
+    <img src="{{ url_for('static', filename='graphs/regression/comparison_bar.png') }}" 
+         style="width:70%; border-radius:10px;">
 </div>
 
+
+<table border="1" style="width:100%; text-align:center;">
+    <tr>
+        <th>Model</th>
+        <th>RMSE</th>
+        <th>R²</th>
+    </tr>
+
+    {% for line in metrics.split('\n') %}
+        {% if 'RMSE' in line %}
+        {% set parts = line.split('-') %}
+        {% set model = parts[0] %}
+        {% set values = parts[1] %}
+        
+        <tr>
+            <td>{{ model }}</td>
+            <td>{{ values.split(',')[0].split(':')[1] }}</td>
+            <td>{{ values.split(',')[1].split(':')[1] }}</td>
+        </tr>
+        {% endif %}
+    {% endfor %}
+</table>
 <br>
 <a href="/">⬅ Back</a>
 

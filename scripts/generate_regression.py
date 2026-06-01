@@ -65,5 +65,25 @@ best = min(metrics, key=lambda x: metrics[x][0])
 # Save metrics
 with open(os.path.join(out, "metrics.txt"), "w") as f:
     for m in metrics:
-        f.write(f"{m} → RMSE:{metrics[m][0]:.2f}, R2:{metrics[m][1]:.2f}\n")
+       f.write(f"{m} - RMSE:{metrics[m][0]:.2f}, R2:{metrics[m][1]:.2f}\n")
+
     f.write(f"\n BEST MODEL: {best}")
+
+import matplotlib.pyplot as plt
+
+#  Create bar chart for RMSE
+names = list(metrics.keys())
+rmse_values = [metrics[m][0] for m in names]
+
+plt.figure(figsize=(8,5))
+plt.bar(names, rmse_values)
+plt.xlabel("Models")
+plt.ylabel("RMSE")
+plt.title("Model Comparison (Lower is Better)")
+plt.xticks(rotation=30)
+
+bar_path = os.path.join(out, "comparison_bar.png")
+plt.savefig(bar_path)
+plt.close()
+
+print(" Bar chart saved:", bar_path)

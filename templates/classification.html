@@ -61,7 +61,7 @@ img {
 
     <div>
         <h3>Logistic Regression</h3>
-        <img src="{{ url_for('static', filename='graphs/classification/Logistic.png') }}">
+        <img src="{{ url_for('static', filename='graphs/classification/Logistic_Regression.png') }}">
     </div>
 
     <div>
@@ -84,7 +84,18 @@ img {
 <!-- Metrics -->
 <div class="metrics">
     <h2>Model Performance</h2>
-    <pre>{{ metrics }}</pre>
+
+    <ul style="list-style:none; padding:0;">
+    {% for line in metrics.split('\n') %}
+        {% if line %}
+            {% if 'BEST MODEL' in line %}
+                <li class="best">{{ line }}</li>
+            {% else %}
+                <li style="padding:5px 0;">{{ line }}</li>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    </ul>
 </div>
 
 <a href="/">⬅ Back</a>
