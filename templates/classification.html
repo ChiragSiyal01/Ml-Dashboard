@@ -1,91 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <title>Classification Results</title>
 
 <style>
-/* Page background */
 body {
     margin: 0;
-    min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-family: Arial;
     background: linear-gradient(135deg, #667eea, #764ba2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    color: white;
 }
 
-/* Card container */
-.card {
-    background: #ffffff;
+.container {
+    background: white;
+    color: black;
+    margin: 40px auto;
+    padding: 30px;
     width: 85%;
-    max-width: 900px;
-    padding: 35px;
     border-radius: 12px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
     text-align: center;
 }
 
-/* Headings */
-h1 {
-    margin-bottom: 20px;
-    color: #333;
-}
-h2 {
-    margin-top: 35px;
-    color: #444;
+/* cards */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
 }
 
-/* Images */
 img {
-    width: 70%;
-    max-width: 500px;
-    margin-top: 15px;
-    border-radius: 10px;
-    border: 2px solid #ddd;
-    box-shadow: 0 5px 12px rgba(0,0,0,0.2);
+    width: 80%;
 }
 
-/* Back button */
-a {
-    display: inline-block;
-    margin-top: 35px;
-    padding: 10px 25px;
-    text-decoration: none;
-    background: linear-gradient(135deg, #ff9966, #ff5e62);
-    color: white;
+/* metrics */
+.metrics {
+    margin-top: 30px;
+    background: #f4f4f4;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.best {
+    background: #cce5ff;
+    padding: 12px;
     border-radius: 8px;
+    margin-top: 10px;
     font-weight: bold;
 }
-a:hover {
-    opacity: 0.9;
-}
 </style>
-</head>
 
+</head>
 <body>
 
-<div class="card">
+<div class="container">
 
-    <h1>Classification Results</h1>
+<h1>Classification Results</h1>
 
-    <h2>Logistic Regression</h2>
-    <img src="{{ url_for('static', filename='graphs/classification/Logistic_Regression.png') }}">
+<div class="grid">
 
-    <h2>SVM</h2>
-    <img src="{{ url_for('static', filename='graphs/classification/SVM.png') }}">
+    <div>
+        <h3>Logistic Regression</h3>
+        <img src="{{ url_for('static', filename='graphs/classification/Logistic_Regression.png') }}">
+    </div>
 
-    <h2>Decision Tree</h2>
-    <img src="{{ url_for('static', filename='graphs/classification/Decision_Tree.png') }}">
+    <div>
+        <h3>SVM</h3>
+        <img src="{{ url_for('static', filename='graphs/classification/SVM.png') }}">
+    </div>
 
-    <h2>Random Forest</h2>
-    <img src="{{ url_for('static', filename='graphs/classification/Random_Forest.png') }}">
+    <div>
+        <h3>Decision Tree</h3>
+        <img src="{{ url_for('static', filename='graphs/classification/Decision_Tree.png') }}">
+    </div>
 
-    <br>
-    <a href="/">⬅ Back to Dashboard</a>
+    <div>
+        <h3>Random Forest</h3>
+        <img src="{{ url_for('static', filename='graphs/classification/Random_Forest.png') }}">
+    </div>
+
+</div>
+
+<!-- Metrics -->
+<div class="metrics">
+    <h2>Model Performance</h2>
+
+    <ul style="list-style:none; padding:0;">
+    {% for line in metrics.split('\n') %}
+        {% if line %}
+            {% if 'BEST MODEL' in line %}
+                <li class="best">{{ line }}</li>
+            {% else %}
+                <li style="padding:5px 0;">{{ line }}</li>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    </ul>
+</div>
+
+<a href="/">⬅ Back</a>
 
 </div>
 
 </body>
 </html>
+``

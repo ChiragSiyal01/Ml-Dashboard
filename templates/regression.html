@@ -1,92 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <title>Regression Results</title>
 
 <style>
-/* Page background */
 body {
     margin: 0;
-    min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-family: Arial;
     background: linear-gradient(135deg, #667eea, #764ba2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Card container */
-.card {
-    background: #ffffff;
-    width: 85%;
-    max-width: 900px;
-    padding: 35px;
-    border-radius: 12px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+    color: white;
     text-align: center;
 }
 
-/* Headings */
-h1 {
-    margin-bottom: 20px;
-    color: #333;
-}
-h2 {
-    margin-top: 35px;
-    color: #444;
+.container {
+    background: white;
+    color: black;
+    margin: 40px auto;
+    padding: 30px;
+    width: 85%;
+    border-radius: 12px;
 }
 
-/* Images */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+}
+
 img {
-    width: 80%;
-    max-width: 650px;
-    margin-top: 15px;
+    width: 100%;
     border-radius: 10px;
-    border: 2px solid #ddd;
-    box-shadow: 0 5px 12px rgba(0,0,0,0.2);
 }
 
-/* Back button */
-a {
-    display: inline-block;
-    margin-top: 35px;
-    padding: 10px 25px;
-    text-decoration: none;
-    background: linear-gradient(135deg, #43cea2, #185a9d);
-    color: white;
-    border-radius: 8px;
+.metrics {
+    margin-top: 30px;
+    padding: 20px;
+    background: #f4f4f4;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.best {
+    background: #d4edda;
+    padding: 10px;
+    border-radius: 6px;
     font-weight: bold;
 }
-a:hover {
-    opacity: 0.9;
-}
 </style>
-</head>
 
+</head>
 <body>
 
-<div class="card">
+<div class="container">
 
-    <h1>Regression Results</h1>
+<h1>Regression Results</h1>
 
-    <h2>Linear Regression</h2>
-    <img src="{{ url_for('static', filename='graphs/regression/linear.png') }}">
+<div class="grid">
 
-    <h2>Polynomial Regression</h2>
-    <img src="{{ url_for('static', filename='graphs/regression/polynomial.png') }}">
+    <div>
+        <h3>Linear</h3>
+        <img src="{{ url_for('static', filename='graphs/regression/linear.png') }}">
+    </div>
 
-    <h2>SVR</h2>
-    <img src="{{ url_for('static', filename='graphs/regression/svr.png') }}">
+    <div>
+        <h3>Polynomial</h3>
+<img src="{{ url_for('static', filename='graphs/regression/svr.png') }}">
+    </div>
 
-    <h2>Decision Tree</h2>
-    <img src="{{ url_for('static', filename='graphs/regression/decision_tree.png') }}">
+    <div>
+        <h3>Decision Tree</h3>
+        <img src="{{ url_for('static', filename='graphs/regression/decision_tree.png') }}">
+    </div>
 
-    <h2>Random Forest</h2>
-    <img src="{{ url_for('static', filename='graphs/regression/random_forest.png') }}">
+    <div>
+        <h3>Random Forest</h3>
+        <img src="{{ url_for('static', filename='graphs/regression/random_forest.png') }}">
+    </div>
 
-    <br>
-    <a href="/">⬅ Back to Dashboard</a>
+</div>
+<!--  BAR CHART -->
+<div style="margin-top:40px; text-align:center;">
+    <h2>Model Comparison (Bar Chart)</h2>
+    
+    <img src="{{ url_for('static', filename='graphs/regression/comparison_bar.png') }}" 
+         style="width:70%; border-radius:10px;">
+</div>
+
+
+<table border="1" style="width:100%; text-align:center;">
+    <tr>
+        <th>Model</th>
+        <th>RMSE</th>
+        <th>R²</th>
+    </tr>
+
+    {% for line in metrics.split('\n') %}
+        {% if 'RMSE' in line %}
+        {% set parts = line.split('-') %}
+        {% set model = parts[0] %}
+        {% set values = parts[1] %}
+        
+        <tr>
+            <td>{{ model }}</td>
+            <td>{{ values.split(',')[0].split(':')[1] }}</td>
+            <td>{{ values.split(',')[1].split(':')[1] }}</td>
+        </tr>
+        {% endif %}
+    {% endfor %}
+</table>
+<br>
+<a href="/">⬅ Back</a>
 
 </div>
 

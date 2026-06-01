@@ -1,99 +1,89 @@
-import sys
-import os
+import sys, os
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
 from sklearn.linear_model import LinearRegression
-from sklearn.preprocessing import PolynomialFeatures, StandardScaler
+from sklearn.preprocessing import PolynomialFeatures
 from sklearn.svm import SVR
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor
-
-# CHECK
-if len(sys.argv) < 2:
-    print("CSV path not provided")
-    sys.exit(1)
+from sklearn.metrics import mean_squared_error, r2_score
 
 csv_path = sys.argv[1]
-
-# LOAD
 data = pd.read_csv(csv_path)
 
-# AUTO SPLIT
 X = data.iloc[:, :-1]
 y = data.iloc[:, -1]
 
-# choose first feature for plotting
-x_col = X.columns[0]
+BASE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(BASE)
 
-# create plotting range
-X_range = np.linspace(X[x_col].min(), X[x_col].max(), 200)
+out = os.path.join(ROOT, "static", "graphs", "regression")
+os.makedirs(out, exist_ok=True)
 
-# dynamic X_plot
+# plot data
 X_plot = pd.DataFrame()
 for col in X.columns:
-    if col == x_col:
-        X_plot[col] = X_range
+    if col == X.columns[0]:
+        X_plot[col] = np.linspace(X[col].min(), X[col].max(), 200)
     else:
         X_plot[col] = X[col].mean()
 
-# OUTPUT DIR
-output_dir = "static/graphs/regression"
-os.makedirs(output_dir, exist_ok=True)
+def save_plot(pred, name):
+    plt.figure()
+    plt.scatter(X.iloc[:,0], y)
+    plt.plot(X_plot.iloc[:,0], pred, color="red")
+    plt.title(name)
 
-# plot function
-def save_plot(y_pred, title, filename):
-    plt.figure(figsize=(8, 5))
-    plt.scatter(X[x_col], y, alpha=0.3)
-    plt.plot(X_range, y_pred, color="red")
-    plt.title(title)
-    plt.xlabel(x_col)
-    plt.ylabel("Target")
-    plt.grid(True)
-    plt.savefig(os.path.join(output_dir, filename))
+    path = os.path.join(out, f"{name}.png")
+    plt.savefig(path)
     plt.close()
 
-# MODELS
+models = {
+    "Linear": LinearRegression(),
+    "Decision_Tree": DecisionTreeRegressor(),
+    "Random_Forest": RandomForestRegressor(),
+}
 
-# Linear
-lr = LinearRegression()
-lr.fit(X, y)
-save_plot(lr.predict(X_plot), "Linear Regression", "linear.png")
+metrics = {}
 
-# Polynomial
-poly = PolynomialFeatures(degree=2)
-X_poly = poly.fit_transform(X)
-X_plot_poly = poly.transform(X_plot)
+for name, model in models.items():
+    model.fit(X, y)
+    pred = model.predict(X)
 
-pr = LinearRegression()
-pr.fit(X_poly, y)
-save_plot(pr.predict(X_plot_poly), "Polynomial Regression", "polynomial.png")
+    rmse = np.sqrt(mean_squared_error(y, pred))
+    r2 = r2_score(y, pred)
 
-# SVR
-scaler_X = StandardScaler()
-scaler_y = StandardScaler()
+    metrics[name] = (rmse, r2)
 
-X_scaled = scaler_X.fit_transform(X)
-y_scaled = scaler_y.fit_transform(y.values.reshape(-1, 1)).ravel()
+    pred_plot = model.predict(X_plot)
+    save_plot(pred_plot, name)
 
-svr = SVR()
-svr.fit(X_scaled, y_scaled)
+# Best model
+best = min(metrics, key=lambda x: metrics[x][0])
 
-y_svr = scaler_y.inverse_transform(
-    svr.predict(scaler_X.transform(X_plot)).reshape(-1, 1)
-).ravel()
+# Save metrics
+with open(os.path.join(out, "metrics.txt"), "w") as f:
+    for m in metrics:
+       f.write(f"{m} - RMSE:{metrics[m][0]:.2f}, R2:{metrics[m][1]:.2f}\n")
 
-save_plot(y_svr, "SVR", "svr.png")
+    f.write(f"\n BEST MODEL: {best}")
 
-# Decision Tree
-dt = DecisionTreeRegressor()
-dt.fit(X, y)
-save_plot(dt.predict(X_plot), "Decision Tree", "decision_tree.png")
+import matplotlib.pyplot as plt
 
-# Random Forest
-rf = RandomForestRegressor()
-rf.fit(X, y)
-save_plot(rf.predict(X_plot), "Random Forest", "random_forest.png")
+#  Create bar chart for RMSE
+names = list(metrics.keys())
+rmse_values = [metrics[m][0] for m in names]
 
-print("Regression graphs generated")
+plt.figure(figsize=(8,5))
+plt.bar(names, rmse_values)
+plt.xlabel("Models")
+plt.ylabel("RMSE")
+plt.title("Model Comparison (Lower is Better)")
+plt.xticks(rotation=30)
+
+bar_path = os.path.join(out, "comparison_bar.png")
+plt.savefig(bar_path)
+plt.close()
+
+print(" Bar chart saved:", bar_path)

@@ -1,0 +1,5 @@
+Linear - RMSE:19.77, R2:0.89
+Decision_Tree - RMSE:0.00, R2:1.00
+Random_Forest - RMSE:9.22, R2:0.98
+
+ BEST MODEL: Decision_Tree
