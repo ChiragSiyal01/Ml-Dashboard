@@ -1,0 +1,6 @@
+Logistic - Accuracy:0.99
+SVM - Accuracy:0.92
+Decision_Tree - Accuracy:0.90
+Random_Forest - Accuracy:0.93
+
+BEST MODEL: Logistic

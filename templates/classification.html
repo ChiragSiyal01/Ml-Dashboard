@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Classification Results</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.container {
+    background: white;
+    color: black;
+    margin: 40px auto;
+    padding: 30px;
+    width: 85%;
+    border-radius: 12px;
+    text-align: center;
+}
+
+/* cards */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+}
+
+img {
+    width: 80%;
+}
+
+/* metrics */
+.metrics {
+    margin-top: 30px;
+    background: #f4f4f4;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: left;
+}
+
+.best {
+    background: #cce5ff;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<h1>Classification Results</h1>
+
+<div class="grid">
+
+    <div>
+        <h3>Logistic Regression</h3>
+        <img src="{{ url_for('static', filename='graphs/classification/Logistic_Regression.png') }}">
+    </div>
+
+    <div>
+        <h3>SVM</h3>
+        <img src="{{ url_for('static', filename='graphs/classification/SVM.png') }}">
+    </div>
+
+    <div>
+        <h3>Decision Tree</h3>
+        <img src="{{ url_for('static', filename='graphs/classification/Decision_Tree.png') }}">
+    </div>
+
+    <div>
+        <h3>Random Forest</h3>
+        <img src="{{ url_for('static', filename='graphs/classification/Random_Forest.png') }}">
+    </div>
+
+</div>
+
+<!-- Metrics -->
+<div class="metrics">
+    <h2>Model Performance</h2>
+
+    <ul style="list-style:none; padding:0;">
+    {% for line in metrics.split('\n') %}
+        {% if line %}
+            {% if 'BEST MODEL' in line %}
+                <li class="best">{{ line }}</li>
+            {% else %}
+                <li style="padding:5px 0;">{{ line }}</li>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    </ul>
+</div>
+
+<a href="/">⬅ Back</a>
+
+</div>
+
+</body>
+</html>
+``
